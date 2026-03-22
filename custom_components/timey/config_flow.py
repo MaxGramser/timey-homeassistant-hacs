@@ -8,7 +8,10 @@ from typing import Any
 import aiohttp
 import voluptuous as vol
 
-from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
+try:
+    from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
+except ImportError:
+    from homeassistant.components.zeroconf import ZeroconfServiceInfo
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 
 from .const import API_STATE, CONF_HOST, DOMAIN
