@@ -1,0 +1,10 @@
+{
+  "domain": "timey",
+  "name": "Timey",
+  "codeowners": ["@maxgramser"],
+  "config_flow": true,
+  "documentation": "https://github.com/maxgramser/timey-homeassistant",
+  "iot_class": "local_polling",
+  "version": "1.0.0",
+  "zeroconf": ["_timey._tcp.local."]
+}

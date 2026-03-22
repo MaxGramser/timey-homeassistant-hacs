@@ -1,0 +1,23 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Timey",
+        "description": "Enter the IP address or hostname of your Timey device.",
+        "data": {
+          "host": "Host"
+        }
+      },
+      "zeroconf_confirm": {
+        "title": "Timey discovered",
+        "description": "Found **{name}** at `{host}`. Do you want to add this device?"
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to the device. Check the IP address and make sure the device is online."
+    },
+    "abort": {
+      "already_configured": "This device is already configured."
+    }
+  }
+}
