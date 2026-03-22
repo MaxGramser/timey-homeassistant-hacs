@@ -9,7 +9,7 @@ from homeassistant.core import HomeAssistant
 from .const import CONF_HOST, DOMAIN
 from .coordinator import TimeyCoordinator
 
-PLATFORMS = [Platform.LIGHT, Platform.TEXT]
+PLATFORMS = [Platform.LIGHT, Platform.NUMBER, Platform.SELECT, Platform.SWITCH, Platform.TEXT]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

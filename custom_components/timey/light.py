@@ -12,6 +12,7 @@ from homeassistant.components.light import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import API_LIGHT, DOMAIN
@@ -30,7 +31,12 @@ async def async_setup_entry(
 
 
 class TimeyLight(TimeyEntity, LightEntity):
-    """Represents the Timey display as a light."""
+    """Represents the Timey display as a light.
+
+    When the schedule is enabled, the display follows the configured daily
+    schedule and cannot be turned on/off manually. Disable the schedule switch
+    first to control the display manually.
+    """
 
     _attr_name = "Display"
     _attr_color_mode = ColorMode.BRIGHTNESS
@@ -53,6 +59,16 @@ class TimeyLight(TimeyEntity, LightEntity):
         pct = self.coordinator.data.get("brightness", 0)
         return round(pct * 255 / 100)
 
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return extra state attributes."""
+        attrs: dict[str, Any] = {}
+        if self.coordinator.data.get("schedule_enabled", False):
+            attrs["notice"] = (
+                "Schedule is active. Turn off the Schedule switch to control the display manually."
+            )
+        return attrs
+
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Turn on the display."""
         data: dict[str, Any] = {"on": True}
@@ -61,11 +77,15 @@ class TimeyLight(TimeyEntity, LightEntity):
         try:
             await self.coordinator.async_post(API_LIGHT, data)
         except ScheduleActiveError as err:
-            _LOGGER.warning("Cannot turn on: %s", err)
+            raise HomeAssistantError(
+                "Schedule is active. Turn off the Schedule switch first to control the display manually."
+            ) from err
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         """Turn off the display."""
         try:
             await self.coordinator.async_post(API_LIGHT, {"on": False})
         except ScheduleActiveError as err:
-            _LOGGER.warning("Cannot turn off: %s", err)
+            raise HomeAssistantError(
+                "Schedule is active. Turn off the Schedule switch first to control the display manually."
+            ) from err
